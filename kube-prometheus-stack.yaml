@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mk8s-prometheus-operator
+  namespace: argocd
+spec:
+  project: pruebas
+  sources:
+   - repoURL: https://prometheus-community.github.io/helm-charts
+     targetRevision: 70.8.0
+     chart: kube-prometheus-stack
+     helm:
+       releaseName: prometheus-stack
+       values: |
+         prometheus:
+           prometheusSpec:
+             externalUrl: http://prom-stack-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+         grafana:
+           adminUser: "admin"
+           adminPassword: "prom-operator"
+           service:
+             type: LoadBalancer  # Para acceso externo
+           ingress:
+             enabled: false  # Cambia a true si usas Ingress
+   - repoURL: https://github.com/joseluiscodesk8/gitops
+     targetRevision: main
+     path: "./"
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
