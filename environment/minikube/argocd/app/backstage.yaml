@@ -11,6 +11,12 @@ spec:
     targetRevision: 2.5.2
     helm:
       releaseName: backstage
+      values: |
+        service:
+          type: NodePort
+          port: 80
+          targetPort: 7007
+          nodePort: 30080
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage
@@ -20,4 +26,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
