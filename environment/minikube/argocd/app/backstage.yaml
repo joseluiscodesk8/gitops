@@ -4,28 +4,20 @@ metadata:
   name: backstage
   namespace: argocd
 spec:
-  project: apps
-  sources:
-    - repoURL: https://backstage.github.io/charts
-      chart: "backstage"
-      targetRevision: 2.5.2
-      helm:
-        releaseName: backstage
-        valueFiles:
-        #- $values/deployment-manifests/helm-values/prd.yaml
-    - repoURL: #'https://github.com/pukara-dev/backstage.git'
-      targetRevision: main
-      ref: values
-    #- repoURL: #'https://github.com/pukara-dev/backstage.git'
-      targetRevision: main
-      path: #deployment-manifests/kubernetes
+  project: default
+  source:
+    repoURL: https://backstage.github.io/charts
+    chart: backstage
+    targetRevision: 2.5.2
+    helm:
+      releaseName: backstage
   destination:
-    namespace: backstage
     server: https://kubernetes.default.svc
+    namespace: backstage
   syncPolicy:
-   automated:
-     prune: true
-     selfHeal: true
-   syncOptions:
-    - CreateNamespace=true
-    - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
